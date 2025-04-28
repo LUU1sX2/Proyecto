@@ -9,5 +9,5 @@ package controlador;
  * @author Jose Luis
  */
 public class Controlador {
-    
+    //Controla el flujo del juego: recibe eventos de botones, actualiza el tablero y valida movimientos legales.
 }

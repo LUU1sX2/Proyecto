@@ -1,5 +1,4 @@
 package vista;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,31 +16,30 @@ public class MainApp extends Application {
         mostrarMenuPrincipal();
     }
 
-    private void mostrarMenuPrincipal() {
-        VBox layout = new VBox(20);
-        layout.setAlignment(Pos.CENTER);
+  private void mostrarMenuPrincipal() {
+    VBox layout = new VBox(20);
+    layout.setAlignment(Pos.CENTER);
 
-        Button botonModoTriangular = new Button("Modo Triangular");
-        Button botonModoCruz = new Button("Modo Cruz");
-        Button botonSalir = new Button("Salir");
+    Button triangular = new Button("Modo Triangular");
+    triangular.setOnAction(e -> {
+        TableroVista vista = new TableroVista();
+        vista.start(primaryStage); // Modo triangular
+    });
 
-        botonModoTriangular.setOnAction(e -> mostrarTableroTriangular());
-        botonModoCruz.setOnAction(e -> System.out.println("Aquí Modo Cruz"));
-        botonSalir.setOnAction(e -> primaryStage.close());
+    Button cruz = new Button("Modo Cruz");
+    cruz.setOnAction(e -> {
+      System.out.println("Botón de cruz presionado");
+      TableroVista vista = new TableroVista();
+      vista.mostrarTableroCruz(primaryStage);
+    });
 
-        layout.getChildren().addAll(botonModoTriangular, botonModoCruz, botonSalir);
-
-        Scene scene = new Scene(layout, 400, 300);
-        primaryStage.setTitle("Menú Principal");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    private void mostrarTableroTriangular() {
-        TableroVista tableroVista = new TableroVista();
-        tableroVista.start(primaryStage); 
-    }
-
+    layout.getChildren().addAll(triangular, cruz);
+    Scene scene = new Scene(layout, 300, 200);
+    primaryStage.setScene(scene);
+    primaryStage.setTitle("Selecciona un modo");
+    primaryStage.show();
+}
+    
     public static void main(String[] args) {
         launch(args);
     }

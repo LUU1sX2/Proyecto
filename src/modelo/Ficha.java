@@ -9,17 +9,17 @@ package modelo;
  * @author Jose Luis
  */
 public class Ficha {
-   private int xPosicion;
-   private int yPosicion;
-   private boolean existe;
-   
-   public Ficha(int x, int y,boolean existe){
-       this.xPosicion=x;
-       this.yPosicion=y;
-       this.existe=existe;
+
+    private int xPosicion;
+    private int yPosicion;
+    private boolean existe;
+
+    public Ficha(int x, int y, boolean existe) {
+        this.xPosicion = x;
+        this.yPosicion = y;
+        this.existe = existe;
     }
 
-    
     public int getxPosicion() {
         return xPosicion;
     }
@@ -43,6 +43,5 @@ public class Ficha {
     public void setExiste(boolean existe) {
         this.existe = existe;
     }
-
 
 }

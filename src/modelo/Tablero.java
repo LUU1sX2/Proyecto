@@ -1,6 +1,7 @@
 package modelo;
 
 public class Tablero {
+
     private int tamaño;
     private Ficha[][] fichas;
     private boolean esCruz;

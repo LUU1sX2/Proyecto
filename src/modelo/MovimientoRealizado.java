@@ -1,6 +1,7 @@
 package modelo;
 
 public class MovimientoRealizado {
+
     private Ficha origen;
     private Ficha intermedia;
     private Ficha destino;

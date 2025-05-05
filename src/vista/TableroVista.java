@@ -1,6 +1,8 @@
 package vista;
 
-import controlador.JuegoController;
+import controlador.ControladorCruz;
+import controlador.ControladorJuego;
+import controlador.ControladorTriangulo;
 import modelo.Tablero;
 import modelo.Ficha;
 import javafx.application.Application;
@@ -17,14 +19,14 @@ public class TableroVista extends Application {
     private Stage primaryStage;
     private Button[][] botones;
     private Tablero tablero;
-    private JuegoController controlador;
+    private ControladorJuego controlador;
     private boolean seleccionando = true;
     private Label contadorLabel = new Label("Movimientos: 0");
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        mostrarMenuPrincipal(primaryStage); // ahora sí está inicializado
+        mostrarMenuPrincipal(primaryStage);
 }
 
     public void mostrarMenuPrincipal(Stage primaryStage) {
@@ -51,7 +53,8 @@ public class TableroVista extends Application {
     private void mostrarTableroTriangular(Stage primaryStage) {
         int tamaño = 5;
         tablero = new Tablero(tamaño);
-        controlador = new JuegoController(tablero);
+        controlador = new ControladorTriangulo(tablero);
+
         botones = new Button[tamaño][tamaño];
 
         VBox layout = new VBox(10);
@@ -111,7 +114,7 @@ public class TableroVista extends Application {
     private void mostrarTableroCruz(Stage primaryStage) {
         int tamaño = 7;
         tablero = new Tablero(tamaño, true);
-        controlador = new JuegoController(tablero);
+        controlador = new ControladorCruz(tablero);
         botones = new Button[tamaño][tamaño];
 
         VBox layout = new VBox(10);
@@ -207,6 +210,7 @@ public class TableroVista extends Application {
     }
 
     private void actualizarContador() {
+
         contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
     }
 

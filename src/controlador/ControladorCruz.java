@@ -6,14 +6,14 @@ import modelo.Tablero;
 import java.util.Stack;
 import modelo.MovimientoRealizado;
 
-public class JuegoController {
+public class ControladorCruz implements ControladorJuego {
 
     private Tablero tablero;
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
     private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
 
-    public JuegoController(Tablero tablero) {
+    public ControladorCruz(Tablero tablero) {
         this.tablero = tablero;
         this.contadorMovimientos = 0;
     }
@@ -40,8 +40,7 @@ public class JuegoController {
         int dx = filaDestino - fichaSeleccionada.getxPosicion();
         int dy = colDestino - fichaSeleccionada.getyPosicion();
 
-        // Solo permitir salto de 2 posiciones horizontal o diagonal
-        if (!((Math.abs(dx) == 2 && dy == 0) || (Math.abs(dy) == 2 && dx == 0) || (Math.abs(dx) == 2 && Math.abs(dy) == 2))) {
+        if (!((Math.abs(dx) == 2 && dy == 0) || (Math.abs(dy) == 2 && dx == 0))) {
             return false;
         }
 
@@ -90,7 +89,7 @@ public class JuegoController {
         tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion())
                 .setExiste(mov.getDestino().isExiste());
 
-        contadorMovimientos--; // Disminuir el contador
+        contadorMovimientos--;
         return true;
     }
 
@@ -109,23 +108,23 @@ public class JuegoController {
 
     private boolean hayMovimientosPosibles() {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
-            for (int col = 0; col <= fila; col++) {
+            for (int col = 0; col < tablero.getTamaño(); col++) {
                 Ficha f = tablero.getFicha(fila, col);
                 if (f != null && f.isExiste() && puedeMover(fila, col)) {
                     return true;
                 }
-
             }
         }
         return false;
     }
 
+
     private boolean puedeMover(int fila, int col) {
         int[][] direcciones = {
-            {0, 2}, {0, -2}, // horizontal
-            {2, 0}, {-2, 0}, // diagonal hacia abajo/arriba
-            {2, 2}, {-2, -2} // diagonal izquierda/derecha
+                {0, 2}, {0, -2}, // horizontal
+                {2, 0}, {-2, 0}  // vertical
         };
+
 
         for (int[] dir : direcciones) {
             int destinoFila = fila + dir[0];
@@ -154,6 +153,7 @@ public class JuegoController {
     }
 
     public int getContadorMovimientos() {
+
         return contadorMovimientos;
     }
 }

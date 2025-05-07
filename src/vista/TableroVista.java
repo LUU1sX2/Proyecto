@@ -47,6 +47,7 @@ public class TableroVista extends Application {
         Scene scene = new Scene(layout, 300, 200);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Selecciona un modo");
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 
@@ -63,9 +64,10 @@ public class TableroVista extends Application {
 
         layout.getChildren().addAll(tableroVisual, contadorLabel, controles);
 
-        Scene scene = new Scene(layout, 600, 650);
+        Scene scene = new Scene(layout, 500, 550);
         primaryStage.setTitle("Tablero Triangular");
         primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 
@@ -75,20 +77,9 @@ public class TableroVista extends Application {
         controlador = new ControladorCruz(tablero);
 
         Pane tableroPane = new Pane();
-        Image fondo = new Image(getClass().getResource("/Imagenes/tablero_cuadrado.png").toExternalForm());
-        double ancho = fondo.getWidth();
-        double alto = fondo.getHeight();
-
-        BackgroundImage bg = new BackgroundImage(fondo,
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER,
-                new BackgroundSize(ancho, alto, false, false, false, false));
-        tableroPane.setPrefSize(ancho, alto);
-        tableroPane.setBackground(new Background(bg));
-
-        double spacing = 66.2;
-        double offsetX = 76;
-        double offsetY = 65;
+        double spacing = 55;
+        double offsetX = 30;
+        double offsetY = 30;
 
         for (int fila = 0; fila < tamano; fila++) {
             for (int col = 0; col < tamano; col++) {
@@ -102,17 +93,21 @@ public class TableroVista extends Application {
             }
         }
 
+        StackPane tableroCentrado = new StackPane(tableroPane);
+        tableroCentrado.setPrefSize(400, 400);
+
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
         contadorLabel.setText("Movimientos: 0");
         HBox controles = crearControles(() -> mostrarTableroCruz(primaryStage));
 
-        layout.getChildren().addAll(tableroPane, contadorLabel, controles);
+        layout.getChildren().addAll(tableroCentrado, contadorLabel, controles);
 
-        Scene scene = new Scene(layout, ancho + 40, alto + 100);
+        Scene scene = new Scene(layout, 500, 550);
         primaryStage.setTitle("Modo Cruz");
         primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 

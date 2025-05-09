@@ -49,7 +49,10 @@ public class Tablero {
                 }
             }
         }
-        fichas[3][3].setExiste(false);
+        // Validar existencia antes de modificar
+        if (fichas[3][3] != null) {
+            fichas[3][3].setExiste(false); // centro vacío
+        }
     }
 
     public Ficha getFicha(int fila, int columna) {
@@ -67,3 +70,4 @@ public class Tablero {
         return esCruz;
     }
 }
+

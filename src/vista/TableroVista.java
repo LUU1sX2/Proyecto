@@ -1,5 +1,7 @@
 package vista;
-
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import java.io.IOException;
 import controlador.ControladorCruz;
 import controlador.ControladorJuego;
 import controlador.ControladorTriangulo;
@@ -112,76 +114,18 @@ public class TableroVista extends Application {
     }
 
     private void mostrarTableroCruz(Stage primaryStage) {
-        int tamaño = 7;
-        tablero = new Tablero(tamaño, true);
-        controlador = new ControladorCruz(tablero);
-        botones = new Button[tamaño][tamaño];
-
-        VBox layout = new VBox(10);
-        layout.setAlignment(Pos.CENTER);
-        contadorLabel.setText("Movimientos: 0");
-
-        for (int fila = 0; fila < tamaño; fila++) {
-            HBox filaBotones = new HBox(10);
-            filaBotones.setAlignment(Pos.CENTER);
-
-            for (int col = 0; col < tamaño; col++) {
-                Ficha ficha = tablero.getFicha(fila, col);
-                Button boton = new Button();
-                boton.setText((ficha != null && ficha.isExiste()) ? "Ficha" : "");
-                boton.setPrefSize(50, 50);
-
-                final int f = fila;
-                final int c = col;
-                boton.setOnAction(e -> {
-                    if (seleccionando) {
-                        if (controlador.seleccionarFicha(f, c)) {
-                            seleccionando = false;
-                        }
-                    } else {
-                        if (controlador.moverFicha(f, c)) {
-                            actualizarVistaCruz();
-                        }
-                        seleccionando = true;
-                    }
-                });
-
-                botones[fila][col] = boton;
-                if (ficha != null) {
-                    filaBotones.getChildren().add(boton);
-                }
-            }
-
-            layout.getChildren().add(filaBotones);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/TableroVista.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 600, 600);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Modo Cruz");
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        HBox controles = new HBox(10);
-        controles.setAlignment(Pos.CENTER);
-
-        Button botonSalirMenu = new Button("Salir al Menú");
-        botonSalirMenu.setOnAction(e -> mostrarMenuPrincipal(primaryStage));
-
-        Button botonSalirJuego = new Button("Salir del Juego");
-        botonSalirJuego.setOnAction(e -> System.exit(0));
-
-        Button undoBtn = new Button("Undo");
-        undoBtn.setOnAction(e -> {
-            if (controlador.deshacerUltimoMovimiento()) {
-                actualizarVistaCruz();
-            }
-        });
-
-        Button reiniciarBtn = new Button("Reiniciar");
-        reiniciarBtn.setOnAction(e -> mostrarTableroCruz(primaryStage));
-
-        controles.getChildren().addAll(botonSalirMenu, botonSalirJuego, undoBtn, reiniciarBtn);
-        layout.getChildren().addAll(contadorLabel, controles);
-
-        Scene scene = new Scene(layout, 600, 600);
-        primaryStage.setTitle("Modo Cruz");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
+
 
     private void manejarClickFicha(int fila, int columna) {
         if (seleccionando) {

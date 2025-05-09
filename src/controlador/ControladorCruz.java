@@ -1,21 +1,92 @@
 package controlador;
 
-import javafx.scene.control.Alert;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import modelo.Ficha;
-import modelo.Tablero;
-import java.util.Stack;
 import modelo.MovimientoRealizado;
+import modelo.Tablero;
+
+import java.util.Stack;
 
 public class ControladorCruz implements ControladorJuego {
+
+    @FXML private Label contadorLabel;
+    @FXML private GridPane tableroGrid;
+    @FXML private Button botonMenu, botonSalir, undoBtn, reiniciarBtn;
 
     private Tablero tablero;
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
     private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
 
-    public ControladorCruz(Tablero tablero) {
-        this.tablero = tablero;
-        this.contadorMovimientos = 0;
+    @FXML
+    private void initialize() {
+        int tamaño = 7;
+        tablero = new Tablero(tamaño, true);
+        fichaSeleccionada = null;
+        contadorMovimientos = 0;
+
+        tableroGrid.getChildren().clear();
+        Button[][] botones = new Button[tamaño][tamaño];
+
+        for (int fila = 0; fila < tamaño; fila++) {
+            for (int col = 0; col < tamaño; col++) {
+                Ficha ficha = tablero.getFicha(fila, col);
+                if (ficha != null) {
+                    Button boton = new Button();
+                    boton.setPrefSize(50, 50);
+
+                    if (ficha.isExiste()) {
+                        boton.setText("Ficha");
+                    }
+
+                    boton.setPickOnBounds(false);
+                    boton.setFocusTraversable(false);
+
+                    final int f = fila;
+                    final int c = col;
+
+                    boton.setOnAction(e -> {
+                        if (fichaSeleccionada == null) {
+                            if (seleccionarFicha(f, c)) {
+                                fichaSeleccionada = tablero.getFicha(f, c);
+                            }
+                        } else {
+                            if (moverFicha(f, c)) {
+                                actualizarVista();
+                            }
+                            fichaSeleccionada = null;
+                        }
+                    });
+
+                    botones[fila][col] = boton;
+                    tableroGrid.add(boton, col, fila);
+                }
+            }
+        }
+
+        botonMenu.setOnAction(e -> volverAlMenu());
+        botonSalir.setOnAction(e -> System.exit(0));
+        reiniciarBtn.setOnAction(e -> recargar());
+        undoBtn.setOnAction(e -> {
+            if (deshacerUltimoMovimiento()) {
+                actualizarVista();
+            }
+        });
+    }
+
+    private void actualizarVista() {
+        initialize();
+        contadorLabel.setText("Movimientos: " + contadorMovimientos);
+    }
+
+    private void volverAlMenu() {
+        // Lógica para volver al menú principal
+    }
+
+    private void recargar() {
+        initialize();
     }
 
     public boolean seleccionarFicha(int fila, int col) {
@@ -28,66 +99,47 @@ public class ControladorCruz implements ControladorJuego {
     }
 
     public boolean moverFicha(int filaDestino, int colDestino) {
-        if (fichaSeleccionada == null) {
-            return false;
-        }
+        if (fichaSeleccionada == null) return false;
 
         Ficha destino = tablero.getFicha(filaDestino, colDestino);
-        if (destino == null || destino.isExiste()) {
-            return false;
-        }
+        if (destino == null || destino.isExiste()) return false;
 
         int dx = filaDestino - fichaSeleccionada.getxPosicion();
         int dy = colDestino - fichaSeleccionada.getyPosicion();
 
-        if (!((Math.abs(dx) == 2 && dy == 0) || (Math.abs(dy) == 2 && dx == 0))) {
-            return false;
-        }
+        if (!((Math.abs(dx) == 2 && dy == 0) || (Math.abs(dy) == 2 && dx == 0))) return false;
 
         int filaMedia = fichaSeleccionada.getxPosicion() + dx / 2;
         int colMedia = fichaSeleccionada.getyPosicion() + dy / 2;
         Ficha intermedia = tablero.getFicha(filaMedia, colMedia);
 
         if (intermedia != null && intermedia.isExiste()) {
-            // NUEVO: Guardar el movimiento antes de realizarlo
-            pilaMovimientos.push(new MovimientoRealizado(
-                    fichaSeleccionada, intermedia, destino
-            ));
+            pilaMovimientos.push(new MovimientoRealizado(fichaSeleccionada, intermedia, destino));
 
-            intermedia.setExiste(false); // ficha comida
+            intermedia.setExiste(false);
             destino.setExiste(true);
             fichaSeleccionada.setExiste(false);
             fichaSeleccionada = null;
             contadorMovimientos++;
-            // Verifica si se gana o se pierde
+
             if (verificarVictoria()) {
                 mostrarAlerta("¡Victoria!", "¡Ganaste! Solo queda una ficha.");
             } else if (!hayMovimientosPosibles()) {
                 mostrarAlerta("Derrota", "No hay más movimientos posibles.");
             }
-
             return true;
         }
-
         return false;
     }
 
     public boolean deshacerUltimoMovimiento() {
-        if (pilaMovimientos.isEmpty()) {
-            return false;
-        }
+        if (pilaMovimientos.isEmpty()) return false;
 
         MovimientoRealizado mov = pilaMovimientos.pop();
 
-        // Restaurar estados de las fichas
-        tablero.getFicha(mov.getOrigen().getxPosicion(), mov.getOrigen().getyPosicion())
-                .setExiste(mov.getOrigen().isExiste());
-
-        tablero.getFicha(mov.getIntermedia().getxPosicion(), mov.getIntermedia().getyPosicion())
-                .setExiste(mov.getIntermedia().isExiste());
-
-        tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion())
-                .setExiste(mov.getDestino().isExiste());
+        tablero.getFicha(mov.getOrigen().getxPosicion(), mov.getOrigen().getyPosicion()).setExiste(true);
+        tablero.getFicha(mov.getIntermedia().getxPosicion(), mov.getIntermedia().getyPosicion()).setExiste(true);
+        tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion()).setExiste(false);
 
         contadorMovimientos--;
         return true;
@@ -98,9 +150,7 @@ public class ControladorCruz implements ControladorJuego {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col < tablero.getTamaño(); col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
-                if (ficha != null && ficha.isExiste()) {
-                    contador++;
-                }
+                if (ficha != null && ficha.isExiste()) contador++;
             }
         }
         return contador == 1;
@@ -110,21 +160,14 @@ public class ControladorCruz implements ControladorJuego {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col < tablero.getTamaño(); col++) {
                 Ficha f = tablero.getFicha(fila, col);
-                if (f != null && f.isExiste() && puedeMover(fila, col)) {
-                    return true;
-                }
+                if (f != null && f.isExiste() && puedeMover(fila, col)) return true;
             }
         }
         return false;
     }
 
-
     private boolean puedeMover(int fila, int col) {
-        int[][] direcciones = {
-                {0, 2}, {0, -2}, // horizontal
-                {2, 0}, {-2, 0}  // vertical
-        };
-
+        int[][] direcciones = {{0, 2}, {0, -2}, {2, 0}, {-2, 0}};
 
         for (int[] dir : direcciones) {
             int destinoFila = fila + dir[0];
@@ -135,12 +178,10 @@ public class ControladorCruz implements ControladorJuego {
             Ficha destino = tablero.getFicha(destinoFila, destinoCol);
             Ficha intermedia = tablero.getFicha(mediaFila, mediaCol);
 
-            if (destino != null && !destino.isExiste()
-                    && intermedia != null && intermedia.isExiste()) {
+            if (destino != null && !destino.isExiste() && intermedia != null && intermedia.isExiste()) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -153,7 +194,6 @@ public class ControladorCruz implements ControladorJuego {
     }
 
     public int getContadorMovimientos() {
-
         return contadorMovimientos;
     }
 }

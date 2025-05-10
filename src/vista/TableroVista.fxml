@@ -11,101 +11,79 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorCruz">
-   <children>
-      <VBox alignment="CENTER" prefHeight="700" prefWidth="600" spacing="10">
-         <HBox>
-            <children>
-               <VBox>
-                  <children>
-                     <ToolBar />
-                  </children>
-               </VBox>
-            </children>
-         </HBox>
+    <children>
+        <VBox alignment="CENTER" prefHeight="700" prefWidth="600" spacing="10">
+            <HBox>
+                <children>
+                    <VBox>
+                        <children>
+                            <ToolBar />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
 
-          <GridPane fx:id="tableroGrid" accessibleRole="IMAGE_VIEW" alignment="CENTER" hgap="5" vgap="5">
-              <!-- Fila 0 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" />
+            <GridPane fx:id="tableroGrid" alignment="CENTER" hgap="5" vgap="5">
 
-              <!-- Fila 1 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="1" />
-
-              <!-- Fila 2 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="3" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="3" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="3" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="3" />
-
-              <!-- Fila 3 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="4" />
-              <Button prefHeight="50" prefWidth="50" text="" GridPane.columnIndex="9" GridPane.rowIndex="4" /> <!-- centro vacío -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="4" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="4" />
-
-              <!-- Fila 4 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="5" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="5" />
-
-              <!-- Fila 5 -->
-              <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="6" />
-
-              <!-- Fila 6 -->
-              <Button accessibleRole="IMAGE_VIEW" prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="7" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+                <!-- Botones en cruz -->
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="6" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="7" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="7" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="4" />
+            <Button prefHeight="50" prefWidth="50" text="" GridPane.columnIndex="9" GridPane.rowIndex="4" />
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="3" />
             <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="1" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="7" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="7" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="3" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="4" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="12" GridPane.rowIndex="5" />
-            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" GridPane.rowIndex="6" />
             <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="10" />
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-          </GridPane>
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="6" />
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="7" />
+            <Button prefHeight="50" prefWidth="50" text="Ficha" GridPane.columnIndex="9" GridPane.rowIndex="5" />
 
-             <Label fx:id="contadorLabel" text="Movimientos: 0" />
+                <columnConstraints>
+                    <ColumnConstraints /><ColumnConstraints /><ColumnConstraints />
+                    <ColumnConstraints /><ColumnConstraints /><ColumnConstraints />
+                    <ColumnConstraints /><ColumnConstraints /><ColumnConstraints />
+                    <ColumnConstraints /><ColumnConstraints /><ColumnConstraints />
+                    <ColumnConstraints />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints /><RowConstraints /><RowConstraints />
+                    <RowConstraints /><RowConstraints /><RowConstraints />
+                    <RowConstraints /><RowConstraints />
+                </rowConstraints>
+            </GridPane>
 
-          <HBox alignment="CENTER" spacing="10">
-              <Button fx:id="botonMenu" text="Salir al Menú" />
-              <Button fx:id="botonSalir" text="Salir del Juego" />
-            <VBox />
-              <Button fx:id="undoBtn" text="Undo" />
-              <Button fx:id="reiniciarBtn" text="Reiniciar" />
-          </HBox>
-      </VBox>
-   </children>
+            <Label fx:id="contadorLabel" text="Movimientos: 0" />
+
+            <HBox alignment="CENTER" spacing="10">
+                <Button fx:id="botonMenu" text="Salir al Menú" />
+                <Button fx:id="botonSalir" text="Salir del Juego" />
+                <Button fx:id="undoBtn" text="Undo" />
+                <Button fx:id="reiniciarBtn" text="Reiniciar" />
+            </HBox>
+        </VBox>
+    </children>
 </StackPane>

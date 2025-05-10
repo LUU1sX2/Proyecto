@@ -41,7 +41,8 @@ public class Tablero {
     private void inicializarTableroCruz() {
         for (int fila = 0; fila < tamaño; fila++) {
             for (int col = 0; col < tamaño; col++) {
-                boolean enCruz = (fila >= 2 && fila <= 4) || (col >= 2 && col <= 4);
+                // Para tablero de 13x13: brazos de la cruz del 3 al 9 inclusive
+                boolean enCruz = (fila >= 3 && fila <= 9) || (col >= 3 && col <= 9);
                 if (enCruz) {
                     fichas[fila][col] = new Ficha(fila, col, true);
                 } else {
@@ -49,9 +50,11 @@ public class Tablero {
                 }
             }
         }
-        // Validar existencia antes de modificar
-        if (fichas[3][3] != null) {
-            fichas[3][3].setExiste(false); // centro vacío
+
+        // Centro vacío (posición 6,6 en un tablero 13x13)
+        int centro = tamaño / 2;
+        if (fichas[centro][centro] != null) {
+            fichas[centro][centro].setExiste(false);
         }
     }
 
@@ -70,4 +73,3 @@ public class Tablero {
         return esCruz;
     }
 }
-

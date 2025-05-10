@@ -1,6 +1,7 @@
 package controlador;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import modelo.Ficha;
@@ -22,27 +23,22 @@ public class ControladorCruz implements ControladorJuego {
 
     @FXML
     private void initialize() {
-        int tamaño = 7;
+        int tamaño = 13;
         tablero = new Tablero(tamaño, true);
         fichaSeleccionada = null;
         contadorMovimientos = 0;
 
-        tableroGrid.getChildren().clear();
-        Button[][] botones = new Button[tamaño][tamaño];
+        // Recorre los botones ya definidos en el FXML
+        for (Node node : tableroGrid.getChildren()) {
+            if (node instanceof Button boton) {
+                Integer fila = GridPane.getRowIndex(boton);
+                Integer col = GridPane.getColumnIndex(boton);
+                if (fila == null) fila = 0;
+                if (col == null) col = 0;
 
-        for (int fila = 0; fila < tamaño; fila++) {
-            for (int col = 0; col < tamaño; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
                 if (ficha != null) {
-                    Button boton = new Button();
-                    boton.setPrefSize(50, 50);
-
-                    if (ficha.isExiste()) {
-                        boton.setText("Ficha");
-                    }
-
-                    boton.setPickOnBounds(false);
-                    boton.setFocusTraversable(false);
+                    boton.setText(ficha.isExiste() ? "Ficha" : "");
 
                     final int f = fila;
                     final int c = col;
@@ -59,13 +55,13 @@ public class ControladorCruz implements ControladorJuego {
                             fichaSeleccionada = null;
                         }
                     });
-
-                    botones[fila][col] = boton;
-                    tableroGrid.add(boton, col, fila);
+                } else {
+                    boton.setVisible(false); // Oculta botones fuera del tablero
                 }
             }
         }
 
+        // Configura botones de acción
         botonMenu.setOnAction(e -> volverAlMenu());
         botonSalir.setOnAction(e -> System.exit(0));
         reiniciarBtn.setOnAction(e -> recargar());
@@ -77,7 +73,19 @@ public class ControladorCruz implements ControladorJuego {
     }
 
     private void actualizarVista() {
-        initialize();
+        for (Node node : tableroGrid.getChildren()) {
+            if (node instanceof Button boton) {
+                Integer fila = GridPane.getRowIndex(boton);
+                Integer col = GridPane.getColumnIndex(boton);
+                if (fila == null) fila = 0;
+                if (col == null) col = 0;
+
+                Ficha ficha = tablero.getFicha(fila, col);
+                if (ficha != null) {
+                    boton.setText(ficha.isExiste() ? "Ficha" : "");
+                }
+            }
+        }
         contadorLabel.setText("Movimientos: " + contadorMovimientos);
     }
 

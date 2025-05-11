@@ -88,9 +88,11 @@ public class ControladorCruz implements ControladorJuego {
                     if (ficha.isExiste()) {
                         Image image = new Image(getClass().getResourceAsStream("/img/ficha.jpg"));
                         ImageView view = new ImageView(image);
-                        view.setFitWidth(30);
-                        view.setFitHeight(30);
+                        view.setFitWidth(40); // ajusta según el tamaño de casilla
+                        view.setFitHeight(40);
                         boton.setGraphic(view);
+                        boton.setText(""); // asegúrate de que no haya texto
+
                     } else {
                         boton.setGraphic(null);  // ❗ Quita la imagen si la ficha fue eliminada
                     }

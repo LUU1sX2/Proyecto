@@ -1,0 +1,28 @@
+.ficha-boton {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
+    -fx-max-width: 50px;
+    -fx-max-height: 50px;
+}
+.fondo-tablero {
+    -fx-background-image: url("../img/tablero_cruz.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center top;
+    -fx-background-size: 100% auto;
+    -fx-padding: 20 0 0 0;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 100%;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-border-radius: 100%;
+}
+
+.image-view {
+    -fx-effect: dropshadow(gaussian, black, 2, 0.5, 0, 0);
+}
+

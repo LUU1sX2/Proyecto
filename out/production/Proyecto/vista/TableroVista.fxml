@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorCruz">
+<StackPane stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorCruz">
+
     <children>
         <VBox alignment="CENTER" prefHeight="700.0" prefWidth="600.0" spacing="10">
          <StackPane>
@@ -57,13 +58,13 @@
       
                             <columnConstraints>
                           <ColumnConstraints />
-                     <ColumnConstraints />
-                     <ColumnConstraints />
+                     <ColumnConstraints maxWidth="0.0" minWidth="0.0" prefWidth="0.0" />
+                     <ColumnConstraints maxWidth="0.0" minWidth="0.0" prefWidth="0.0" />
                           <ColumnConstraints />
                      <ColumnConstraints />
-                     <ColumnConstraints />
-                          <ColumnConstraints />
-                     <ColumnConstraints />
+                     <ColumnConstraints maxWidth="0.0" minWidth="0.0" prefWidth="0.0" />
+                          <ColumnConstraints maxWidth="100.0" minWidth="0.0" prefWidth="48.0" />
+                     <ColumnConstraints maxWidth="100.0" minWidth="0.0" prefWidth="52.0" />
                      <ColumnConstraints />
                           <ColumnConstraints />
                      <ColumnConstraints />

@@ -7,6 +7,8 @@ import javafx.scene.layout.GridPane;
 import modelo.Ficha;
 import modelo.MovimientoRealizado;
 import modelo.Tablero;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.Stack;
 
@@ -83,12 +85,24 @@ public class ControladorCruz implements ControladorJuego {
 
                 Ficha ficha = tablero.getFicha(fila, col);
                 if (ficha != null) {
-                    boton.setText(ficha.isExiste() ? "Ficha" : "");
+                    if (ficha.isExiste()) {
+                        Image image = new Image(getClass().getResourceAsStream("/img/ficha.jpg"));
+                        ImageView view = new ImageView(image);
+                        view.setFitWidth(30);
+                        view.setFitHeight(30);
+                        boton.setGraphic(view);
+                    } else {
+                        boton.setGraphic(null);  // ❗ Quita la imagen si la ficha fue eliminada
+                    }
+
+                    // Puedes mantener el texto o vaciarlo
+                    boton.setText(""); // o "Ficha" si lo deseas
                 }
             }
         }
         contadorLabel.setText("Movimientos: " + contadorMovimientos);
     }
+
 
     private void volverAlMenu() {
         // Aquí puedes cargar otra vista si tienes más escenas

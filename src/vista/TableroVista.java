@@ -1,20 +1,21 @@
 package vista;
+
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import java.io.IOException;
-import controlador.ControladorCruz;
-import controlador.ControladorJuego;
-import controlador.ControladorTriangulo;
-import modelo.Tablero;
-import modelo.Ficha;
-import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import modelo.Ficha;
+import modelo.Tablero;
+import controlador.ControladorJuego;
+import controlador.ControladorTriangulo;
+
+import java.io.IOException;
 
 public class TableroVista extends Application {
 
@@ -29,34 +30,32 @@ public class TableroVista extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         mostrarMenuPrincipal(primaryStage);
-}
+    }
 
     public void mostrarMenuPrincipal(Stage primaryStage) {
-    VBox layout = new VBox(20);
-    layout.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
 
-    Button triangular = new Button("Modo Triangular");
-    triangular.setOnAction(e -> mostrarTableroTriangular(primaryStage));
+        Button triangular = new Button("Modo Triangular");
+        triangular.setOnAction(e -> mostrarTableroTriangular(primaryStage));
 
-    Button cruz = new Button("Modo Cruz");
-    cruz.setOnAction(e -> mostrarTableroCruz(primaryStage));
+        Button cruz = new Button("Modo Cruz");
+        cruz.setOnAction(e -> mostrarTableroCruz(primaryStage));
 
-    Button salir = new Button("Salir del Juego");
-    salir.setOnAction(e -> System.exit(0));
+        Button salir = new Button("Salir del Juego");
+        salir.setOnAction(e -> System.exit(0));
 
-    layout.getChildren().addAll(triangular, cruz, salir);
-    Scene scene = new Scene(layout, 300, 200);
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Selecciona un modo");
-    primaryStage.show();
-}
-
+        layout.getChildren().addAll(triangular, cruz, salir);
+        Scene scene = new Scene(layout, 300, 200);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Selecciona un modo");
+        primaryStage.show();
+    }
 
     private void mostrarTableroTriangular(Stage primaryStage) {
         int tamaño = 5;
-        tablero = new Tablero(tamaño);
+        tablero = new Tablero(tamaño,false);
         controlador = new ControladorTriangulo(tablero);
-
         botones = new Button[tamaño][tamaño];
 
         VBox layout = new VBox(10);
@@ -117,7 +116,7 @@ public class TableroVista extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/TableroVista.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 600, 600);
+            Scene scene = new Scene(root, 600, 700);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Modo Cruz");
             primaryStage.show();
@@ -125,7 +124,6 @@ public class TableroVista extends Application {
             e.printStackTrace();
         }
     }
-
 
     private void manejarClickFicha(int fila, int columna) {
         if (seleccionando) {
@@ -141,23 +139,6 @@ public class TableroVista extends Application {
         }
     }
 
-    private void actualizarVistaCruz() {
-        for (int fila = 0; fila < tablero.getTamaño(); fila++) {
-            for (int col = 0; col < tablero.getTamaño(); col++) {
-                Ficha ficha = tablero.getFicha(fila, col);
-                if (ficha != null) {
-                    botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
-                }
-            }
-        }
-        contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
-    }
-
-    private void actualizarContador() {
-
-        contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
-    }
-
     private void actualizarVista() {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col <= fila; col++) {
@@ -165,6 +146,10 @@ public class TableroVista extends Application {
                 botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
             }
         }
+    }
+
+    private void actualizarContador() {
+        contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
     }
 
     public static void main(String[] args) {

@@ -19,49 +19,35 @@ public class ControladorCruz implements ControladorJuego {
     private Tablero tablero;
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
-    private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
+    private final Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
 
     @FXML
     private void initialize() {
-        int tamaño = 13;
-        tablero = new Tablero(tamaño, true);
+        tablero = new Tablero(13, true);  // Compatible con diseño FXML
         fichaSeleccionada = null;
         contadorMovimientos = 0;
 
-        // Recorre los botones ya definidos en el FXML
+        // Configurar botones del GridPane
         for (Node node : tableroGrid.getChildren()) {
             if (node instanceof Button boton) {
                 Integer fila = GridPane.getRowIndex(boton);
                 Integer col = GridPane.getColumnIndex(boton);
-                if (fila == null) fila = 0;
-                if (col == null) col = 0;
+                fila = (fila == null) ? 0 : fila;
+                col = (col == null) ? 0 : col;
 
                 Ficha ficha = tablero.getFicha(fila, col);
                 if (ficha != null) {
                     boton.setText(ficha.isExiste() ? "Ficha" : "");
-
                     final int f = fila;
                     final int c = col;
-
-                    boton.setOnAction(e -> {
-                        if (fichaSeleccionada == null) {
-                            if (seleccionarFicha(f, c)) {
-                                fichaSeleccionada = tablero.getFicha(f, c);
-                            }
-                        } else {
-                            if (moverFicha(f, c)) {
-                                actualizarVista();
-                            }
-                            fichaSeleccionada = null;
-                        }
-                    });
+                    boton.setOnAction(e -> manejarClick(f, c));
                 } else {
-                    boton.setVisible(false); // Oculta botones fuera del tablero
+                    boton.setVisible(false);  // Ocultar los que no tienen ficha
                 }
             }
         }
 
-        // Configura botones de acción
+        // Configurar botones de acción
         botonMenu.setOnAction(e -> volverAlMenu());
         botonSalir.setOnAction(e -> System.exit(0));
         reiniciarBtn.setOnAction(e -> recargar());
@@ -70,6 +56,21 @@ public class ControladorCruz implements ControladorJuego {
                 actualizarVista();
             }
         });
+
+        actualizarVista(); // Mostrar estado inicial
+    }
+
+    private void manejarClick(int fila, int col) {
+        if (fichaSeleccionada == null) {
+            if (seleccionarFicha(fila, col)) {
+                fichaSeleccionada = tablero.getFicha(fila, col);
+            }
+        } else {
+            if (moverFicha(fila, col)) {
+                actualizarVista();
+            }
+            fichaSeleccionada = null;
+        }
     }
 
     private void actualizarVista() {
@@ -77,8 +78,8 @@ public class ControladorCruz implements ControladorJuego {
             if (node instanceof Button boton) {
                 Integer fila = GridPane.getRowIndex(boton);
                 Integer col = GridPane.getColumnIndex(boton);
-                if (fila == null) fila = 0;
-                if (col == null) col = 0;
+                fila = (fila == null) ? 0 : fila;
+                col = (col == null) ? 0 : col;
 
                 Ficha ficha = tablero.getFicha(fila, col);
                 if (ficha != null) {
@@ -90,7 +91,8 @@ public class ControladorCruz implements ControladorJuego {
     }
 
     private void volverAlMenu() {
-        // Lógica para volver al menú principal
+        // Aquí puedes cargar otra vista si tienes más escenas
+        System.out.println("Volver al menú (no implementado)");
     }
 
     private void recargar() {
@@ -123,11 +125,9 @@ public class ControladorCruz implements ControladorJuego {
 
         if (intermedia != null && intermedia.isExiste()) {
             pilaMovimientos.push(new MovimientoRealizado(fichaSeleccionada, intermedia, destino));
-
             intermedia.setExiste(false);
             destino.setExiste(true);
             fichaSeleccionada.setExiste(false);
-            fichaSeleccionada = null;
             contadorMovimientos++;
 
             if (verificarVictoria()) {
@@ -137,6 +137,7 @@ public class ControladorCruz implements ControladorJuego {
             }
             return true;
         }
+
         return false;
     }
 
@@ -144,11 +145,9 @@ public class ControladorCruz implements ControladorJuego {
         if (pilaMovimientos.isEmpty()) return false;
 
         MovimientoRealizado mov = pilaMovimientos.pop();
-
         tablero.getFicha(mov.getOrigen().getxPosicion(), mov.getOrigen().getyPosicion()).setExiste(true);
         tablero.getFicha(mov.getIntermedia().getxPosicion(), mov.getIntermedia().getyPosicion()).setExiste(true);
         tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion()).setExiste(false);
-
         contadorMovimientos--;
         return true;
     }
@@ -157,8 +156,8 @@ public class ControladorCruz implements ControladorJuego {
         int contador = 0;
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col < tablero.getTamaño(); col++) {
-                Ficha ficha = tablero.getFicha(fila, col);
-                if (ficha != null && ficha.isExiste()) contador++;
+                Ficha f = tablero.getFicha(fila, col);
+                if (f != null && f.isExiste()) contador++;
             }
         }
         return contador == 1;
@@ -176,7 +175,6 @@ public class ControladorCruz implements ControladorJuego {
 
     private boolean puedeMover(int fila, int col) {
         int[][] direcciones = {{0, 2}, {0, -2}, {2, 0}, {-2, 0}};
-
         for (int[] dir : direcciones) {
             int destinoFila = fila + dir[0];
             int destinoCol = col + dir[1];

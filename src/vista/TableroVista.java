@@ -54,7 +54,7 @@ public class TableroVista extends Application {
 
     private void mostrarTableroTriangular(Stage primaryStage) {
         int tamaño = 5;
-        tablero = new Tablero(tamaño,false);
+        tablero = new Tablero(tamaño, false);
         controlador = new ControladorTriangulo(tablero);
         botones = new Button[tamaño][tamaño];
 
@@ -69,7 +69,8 @@ public class TableroVista extends Application {
             for (int col = 0; col <= fila; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
                 Button boton = new Button();
-                boton.setText(ficha.isExiste() ? "Ficha" : "");
+                boton.getStyleClass().add("ficha-boton");
+                boton.setText("");
                 boton.setPrefSize(50, 50);
 
                 final int f = fila;
@@ -107,9 +108,12 @@ public class TableroVista extends Application {
         layout.getChildren().addAll(contadorLabel, controles);
 
         Scene scene = new Scene(layout, 400, 500);
+        scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
         primaryStage.setTitle("Tablero Triangular");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        actualizarVista(); // inicializa estilos de fichas
     }
 
     private void mostrarTableroCruz(Stage primaryStage) {
@@ -143,7 +147,13 @@ public class TableroVista extends Application {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col <= fila; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
-                botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
+                Button boton = botones[fila][col];
+
+                boton.getStyleClass().remove("ficha-triangular");
+
+                if (ficha != null && ficha.isExiste()) {
+                    boton.getStyleClass().add("ficha-triangular");
+                }
             }
         }
     }

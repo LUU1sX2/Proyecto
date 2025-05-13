@@ -6,4 +6,6 @@ public interface ControladorJuego {
     boolean moverFicha(int fila, int col);
     boolean deshacerUltimoMovimiento();
     int getContadorMovimientos();
+    boolean verificarVictoria();
+
 }

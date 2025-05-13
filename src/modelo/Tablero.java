@@ -13,7 +13,7 @@ public class Tablero {
         if (esCruz) {
             inicializarTableroCruz();
         } else {
-            // Puedes agregar inicializarTableroTriangular() si lo deseas.
+            inicializarTableroTriangular();  // Método para inicializar el tablero triangular
         }
     }
 
@@ -25,9 +25,6 @@ public class Tablero {
                                 (fila >= 4 && fila <= 6 && col >= 6 && col <= 12) ||                         // brazo horizontal medio
                                 ((fila >= 3 && fila <= 7) && (col == 6 || col <= 12))                        // extremos horizontales completos incluyendo fila 7
                 );
-
-
-
 
                 if (enCruz) {
                     fichas[fila][col] = new Ficha(fila, col, true);
@@ -43,6 +40,20 @@ public class Tablero {
         }
     }
 
+    private void inicializarTableroTriangular() {
+        // Lógica para el tablero triangular (solo un ejemplo básico)
+        // Aquí configuramos las posiciones de las fichas para el tablero triangular
+        for (int fila = 0; fila < tamaño; fila++) {
+            for (int col = 0; col <= fila; col++) {  // Las columnas van hasta el número de la fila (formato triangular)
+                fichas[fila][col] = new Ficha(fila, col, true);
+            }
+        }
+
+        // El centro o alguna ficha especial (puedes modificar esto según las reglas de tu juego)
+        if (fichas[0][0] != null) {
+            fichas[0][0].setExiste(false);  // Ejemplo, puedes cambiar la lógica de qué ficha no existe
+        }
+    }
 
     public Ficha getFicha(int fila, int columna) {
         if (fila >= 0 && fila < tamaño && columna >= 0 && columna < tamaño) {

@@ -53,74 +53,32 @@ public class TableroVista extends Application {
     }
 
     private void mostrarTableroTriangular(Stage primaryStage) {
-        int tamaño = 5;
-        tablero = new Tablero(tamaño, false);
-        controlador = new ControladorTriangulo(tablero);
-        botones = new Button[tamaño][tamaño];
+        try {
+            // Cargar el FXML para el Tablero Triangular
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/TableroTriangulo.fxml"));
+            Parent root = loader.load();
 
-        VBox layout = new VBox(10);
-        layout.setAlignment(Pos.CENTER);
-        contadorLabel.setText("Movimientos: 0");
+            // Obtener el controlador y establecer el tablero
+            ControladorTriangulo controlador = loader.getController();
+            controlador.setTablero(new Tablero(5, false)); // Configurar el tablero después de cargar el controlador
 
-        for (int fila = 0; fila < tamaño; fila++) {
-            HBox filaBotones = new HBox(10);
-            filaBotones.setAlignment(Pos.CENTER);
-
-            for (int col = 0; col <= fila; col++) {
-                Ficha ficha = tablero.getFicha(fila, col);
-                Button boton = new Button();
-                boton.getStyleClass().add("ficha-boton");
-                boton.setText("");
-                boton.setPrefSize(50, 50);
-
-                final int f = fila;
-                final int c = col;
-                boton.setOnAction(e -> manejarClickFicha(f, c));
-
-                botones[fila][col] = boton;
-                filaBotones.getChildren().add(boton);
-            }
-
-            layout.getChildren().add(filaBotones);
+            // Crear la escena y mostrarla
+            Scene scene = new Scene(root, 600, 600);
+            scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Modo Triangular");
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        HBox controles = new HBox(10);
-        controles.setAlignment(Pos.CENTER);
-
-        Button botonSalirMenu = new Button("Salir al Menú");
-        botonSalirMenu.setOnAction(e -> mostrarMenuPrincipal(primaryStage));
-
-        Button botonSalirJuego = new Button("Salir del Juego");
-        botonSalirJuego.setOnAction(e -> System.exit(0));
-
-        Button undoBtn = new Button("Undo");
-        undoBtn.setOnAction(e -> {
-            if (controlador.deshacerUltimoMovimiento()) {
-                actualizarVista();
-                actualizarContador();
-            }
-        });
-
-        Button reiniciarBtn = new Button("Reiniciar");
-        reiniciarBtn.setOnAction(e -> mostrarTableroTriangular(primaryStage));
-
-        controles.getChildren().addAll(botonSalirMenu, botonSalirJuego, undoBtn, reiniciarBtn);
-        layout.getChildren().addAll(contadorLabel, controles);
-
-        Scene scene = new Scene(layout, 400, 500);
-        scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
-        primaryStage.setTitle("Tablero Triangular");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        actualizarVista(); // inicializa estilos de fichas
     }
+
 
     private void mostrarTableroCruz(Stage primaryStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vista/TableroVista.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 600, 700);
+            Scene scene = new Scene(root, 600, 600);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Modo Cruz");
             primaryStage.show();

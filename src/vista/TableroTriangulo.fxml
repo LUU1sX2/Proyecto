@@ -7,24 +7,27 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane stylesheets="@../css/estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorTriangulo">
-
     <children>
         <VBox alignment="CENTER" prefHeight="700.0" prefWidth="600.0" spacing="10">
+            <!-- Primera fila -->
             <HBox alignment="CENTER" spacing="10">
-                <Button fx:id="ficha1" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
+                <Button fx:id="ficha5" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
             </HBox>
 
+            <!-- Segunda fila -->
             <HBox alignment="CENTER" spacing="10">
                 <Button fx:id="ficha2" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
                 <Button fx:id="ficha3" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
             </HBox>
 
+            <!-- Tercera fila -->
             <HBox alignment="CENTER" spacing="10">
                 <Button fx:id="ficha4" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
-            <Button prefHeight="50" prefWidth="50" text="" />
+                <Button fx:id="ficha1" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="" />
                 <Button fx:id="ficha6" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
             </HBox>
 
+               <!-- Cuarta fila -->
             <HBox alignment="CENTER" spacing="10">
                 <Button fx:id="ficha7" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
                 <Button fx:id="ficha8" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
@@ -32,6 +35,7 @@
                 <Button fx:id="ficha10" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
             </HBox>
 
+            <!-- Quinta fila -->
             <HBox alignment="CENTER" spacing="10">
                 <Button fx:id="ficha11" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />
                 <Button fx:id="ficha12" onAction="#moverFicha" prefHeight="50" prefWidth="50" text="Ficha" />

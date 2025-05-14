@@ -1,5 +1,9 @@
 package vista;
 
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import modelo.PuntajeManager;
 import controlador.ControladorCruz;
 import controlador.ControladorJuego;
 import controlador.ControladorTriangulo;
@@ -7,12 +11,14 @@ import modelo.Tablero;
 import modelo.Ficha;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+import java.util.List;
+import java.util.Optional;
 
 public class TableroVista extends Application {
 
@@ -21,39 +27,59 @@ public class TableroVista extends Application {
     private Tablero tablero;
     private ControladorJuego controlador;
     private boolean seleccionando = true;
+    private int puntaje = 0;
+    private Label puntajeLabel = new Label("Puntaje: 0");
+    private Timeline temporizador;
+    private long tiempoTranscurrido = 0;
     private Label contadorLabel = new Label("Movimientos: 0");
+    private ListView<String> listaPuntajesTriangulo = new ListView<>();
+    private ListView<String> listaPuntajesCruz = new ListView<>();
+    private boolean temporizadorIniciado = false;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         mostrarMenuPrincipal(primaryStage);
-}
+    }
 
     public void mostrarMenuPrincipal(Stage primaryStage) {
-    VBox layout = new VBox(20);
-    layout.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
 
-    Button triangular = new Button("Modo Triangular");
-    triangular.setOnAction(e -> mostrarTableroTriangular(primaryStage));
+        Button triangular = new Button("Modo Triangular");
+        triangular.setOnAction(e -> mostrarTableroTriangular(primaryStage));
 
-    Button cruz = new Button("Modo Cruz");
-    cruz.setOnAction(e -> mostrarTableroCruz(primaryStage));
+        Button cruz = new Button("Modo Cruz");
+        cruz.setOnAction(e -> mostrarTableroCruz(primaryStage));
 
-    Button salir = new Button("Salir del Juego");
-    salir.setOnAction(e -> System.exit(0));
+        Button salir = new Button("Salir del Juego");
+        salir.setOnAction(e -> System.exit(0));
 
-    layout.getChildren().addAll(triangular, cruz, salir);
-    Scene scene = new Scene(layout, 300, 200);
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Selecciona un modo");
-    primaryStage.show();
-}
+        Label tituloTriangulo = new Label("Top 5 - Triangular:");
+        Label tituloCruz = new Label("Top 5 - Cruz:");
 
+        listaPuntajesTriangulo.setPrefSize(200, 120);
+        listaPuntajesCruz.setPrefSize(200, 120);
+        actualizarTablaPuntajes();
+
+        VBox tablaTriangulo = new VBox(5, tituloTriangulo, listaPuntajesTriangulo);
+        VBox tablaCruz = new VBox(5, tituloCruz, listaPuntajesCruz);
+        HBox tablas = new HBox(20, tablaTriangulo, tablaCruz);
+        tablas.setAlignment(Pos.CENTER);
+
+        layout.getChildren().addAll(tablas, triangular, cruz, salir);
+
+        Scene scene = new Scene(layout, 600, 600);
+        primaryStage.setResizable(false);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Selecciona un modo");
+        primaryStage.show();
+    }
 
     private void mostrarTableroTriangular(Stage primaryStage) {
         int tamaño = 5;
         tablero = new Tablero(tamaño);
-        controlador = new ControladorTriangulo(tablero);
+        controlador = new ControladorTriangulo(tablero, this);
 
         botones = new Button[tamaño][tamaño];
 
@@ -81,12 +107,16 @@ public class TableroVista extends Application {
 
             layout.getChildren().add(filaBotones);
         }
+        layout.getChildren().add(puntajeLabel);
 
         HBox controles = new HBox(10);
         controles.setAlignment(Pos.CENTER);
 
         Button botonSalirMenu = new Button("Salir al Menú");
-        botonSalirMenu.setOnAction(e -> mostrarMenuPrincipal(primaryStage));
+        botonSalirMenu.setOnAction(e -> {
+            mostrarMenuPrincipal(primaryStage);
+            reiniciarTemporizador();
+        });
 
         Button botonSalirJuego = new Button("Salir del Juego");
         botonSalirJuego.setOnAction(e -> System.exit(0));
@@ -100,13 +130,17 @@ public class TableroVista extends Application {
         });
 
         Button reiniciarBtn = new Button("Reiniciar");
-        reiniciarBtn.setOnAction(e -> mostrarTableroTriangular(primaryStage));
+        reiniciarBtn.setOnAction(e -> {
+            reiniciarTemporizador();
+            mostrarTableroTriangular(primaryStage);
+        });
 
         controles.getChildren().addAll(botonSalirMenu, botonSalirJuego, undoBtn, reiniciarBtn);
         layout.getChildren().addAll(contadorLabel, controles);
 
-        Scene scene = new Scene(layout, 400, 500);
+        Scene scene = new Scene(layout, 600, 600);
         primaryStage.setTitle("Tablero Triangular");
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -114,7 +148,7 @@ public class TableroVista extends Application {
     private void mostrarTableroCruz(Stage primaryStage) {
         int tamaño = 7;
         tablero = new Tablero(tamaño, true);
-        controlador = new ControladorCruz(tablero);
+        controlador = new ControladorCruz(tablero, this);
         botones = new Button[tamaño][tamaño];
 
         VBox layout = new VBox(10);
@@ -154,12 +188,16 @@ public class TableroVista extends Application {
 
             layout.getChildren().add(filaBotones);
         }
+        layout.getChildren().add(puntajeLabel);
 
         HBox controles = new HBox(10);
         controles.setAlignment(Pos.CENTER);
 
         Button botonSalirMenu = new Button("Salir al Menú");
-        botonSalirMenu.setOnAction(e -> mostrarMenuPrincipal(primaryStage));
+        botonSalirMenu.setOnAction(e -> {
+            mostrarMenuPrincipal(primaryStage);
+            reiniciarTemporizador();
+        });
 
         Button botonSalirJuego = new Button("Salir del Juego");
         botonSalirJuego.setOnAction(e -> System.exit(0));
@@ -172,13 +210,17 @@ public class TableroVista extends Application {
         });
 
         Button reiniciarBtn = new Button("Reiniciar");
-        reiniciarBtn.setOnAction(e -> mostrarTableroCruz(primaryStage));
+        reiniciarBtn.setOnAction(e -> {
+            reiniciarTemporizador();
+            mostrarTableroCruz(primaryStage);
+        });
 
         controles.getChildren().addAll(botonSalirMenu, botonSalirJuego, undoBtn, reiniciarBtn);
         layout.getChildren().addAll(contadorLabel, controles);
 
         Scene scene = new Scene(layout, 600, 600);
         primaryStage.setTitle("Modo Cruz");
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -210,7 +252,6 @@ public class TableroVista extends Application {
     }
 
     private void actualizarContador() {
-
         contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
     }
 
@@ -221,6 +262,74 @@ public class TableroVista extends Application {
                 botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
             }
         }
+    }
+
+    public void iniciarTemporizador() {
+        if (temporizadorIniciado) return;
+
+        temporizadorIniciado = true;
+
+        if (temporizador != null) {
+            temporizador.stop();
+        }
+
+        tiempoTranscurrido = 0;
+        puntaje = 0;
+
+        temporizador = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+            tiempoTranscurrido++;
+            puntaje = (int) (tiempoTranscurrido);
+            puntajeLabel.setText("Puntaje: " + puntaje);
+        }));
+        temporizador.setCycleCount(Timeline.INDEFINITE);
+        temporizador.play();
+    }
+
+    public void detenerTemporizador() {
+        if (temporizador != null) {
+            temporizador.stop();
+        }
+        temporizadorIniciado = false;
+    }
+
+    public void reiniciarTemporizador() {
+        if (temporizador != null) {
+            temporizador.stop();
+        }
+        tiempoTranscurrido = 0;
+        puntaje = 0;
+        puntajeLabel.setText("Puntaje: 0");
+        temporizadorIniciado = false;
+    }
+
+    public void actualizarTablaPuntajes() {
+        List<String> puntajesTriangulo = PuntajeManager.cargarMejoresPuntajes("triangulo");
+        List<String> puntajesCruz = PuntajeManager.cargarMejoresPuntajes("cruz");
+
+        listaPuntajesTriangulo.getItems().setAll(puntajesTriangulo);
+        listaPuntajesCruz.getItems().setAll(puntajesCruz);
+    }
+
+    public void mostrarDialogoNombreYGuardarPuntaje(int puntaje, String modo) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("¡Ganaste!");
+        dialog.setHeaderText("Ingresa tus 3 letras:");
+        dialog.setContentText("Nombre:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(nombre -> {
+            if (nombre.matches("[A-Z]{3}")) {
+                PuntajeManager.guardarPuntaje(nombre, puntaje, controlador.getContadorMovimientos(), modo);
+                actualizarTablaPuntajes();
+            } else {
+                Alert alerta = new Alert(Alert.AlertType.ERROR, "Nombre inválido. Usa 3 letras mayúsculas.");
+                alerta.showAndWait();
+            }
+        });
+    }
+
+    public int getPuntajeActual() {
+        return puntaje;
     }
 
     public static void main(String[] args) {

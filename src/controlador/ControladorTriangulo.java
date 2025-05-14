@@ -1,20 +1,28 @@
 package controlador;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextInputDialog;
 import modelo.Ficha;
 import modelo.Tablero;
+
+import java.util.Optional;
 import java.util.Stack;
 import modelo.MovimientoRealizado;
+import modelo.PuntajeManager;
+import vista.TableroVista;
 
 public class ControladorTriangulo implements ControladorJuego {
 
     private Tablero tablero;
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
+    private TableroVista vista;
+    private boolean temporizadorIniciado = false;
     private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
 
-    public ControladorTriangulo(Tablero tablero) {
+    public ControladorTriangulo(Tablero tablero,TableroVista vista) {
         this.tablero = tablero;
+        this.vista=vista;
         this.contadorMovimientos = 0;
     }
 
@@ -50,7 +58,8 @@ public class ControladorTriangulo implements ControladorJuego {
         Ficha intermedia = tablero.getFicha(filaMedia, colMedia);
 
         if (intermedia != null && intermedia.isExiste()) {
-            // NUEVO: Guardar el movimiento antes de realizarlo
+            vista.iniciarTemporizador();
+
             pilaMovimientos.push(new MovimientoRealizado(
                     fichaSeleccionada, intermedia, destino
             ));
@@ -61,9 +70,28 @@ public class ControladorTriangulo implements ControladorJuego {
             fichaSeleccionada = null;
             contadorMovimientos++;
             // Verifica si se gana o se pierde
+
             if (verificarVictoria()) {
-                mostrarAlerta("¡Victoria!", "¡Ganaste! Solo queda una ficha.");
-            } else if (!hayMovimientosPosibles()) {
+                vista.detenerTemporizador();
+                int puntajeActual = vista.getPuntajeActual(); // asegúrate que vista tenga este método
+
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("¡Ganaste!");
+                dialog.setHeaderText("Ingresa tus 3 letras:");
+                dialog.setContentText("Nombre:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(nombre -> {
+                    if (nombre.matches("[A-Z]{3}")) {
+                        PuntajeManager.guardarPuntaje(nombre, puntajeActual,0, "triangulo"); // o "triangulo"
+                        vista.actualizarTablaPuntajes(); // si tienes esto visible
+                    } else {
+                        Alert error = new Alert(Alert.AlertType.ERROR, "Debes ingresar exactamente 3 letras mayúsculas.");
+                        error.showAndWait();
+                    }
+                });
+            }else if (!hayMovimientosPosibles()) {
+               vista.detenerTemporizador();
                 mostrarAlerta("Derrota", "No hay más movimientos posibles.");
             }
 
@@ -89,7 +117,6 @@ public class ControladorTriangulo implements ControladorJuego {
         tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion())
                 .setExiste(mov.getDestino().isExiste());
 
-        contadorMovimientos--; // Disminuir el contador
         return true;
     }
 

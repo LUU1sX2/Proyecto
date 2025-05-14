@@ -1,10 +1,15 @@
 package controlador;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextInputDialog;
 import modelo.Ficha;
 import modelo.Tablero;
+
+import java.util.Optional;
 import java.util.Stack;
 import modelo.MovimientoRealizado;
+import modelo.PuntajeManager;
+import vista.TableroVista;
 
 public class ControladorCruz implements ControladorJuego {
 
@@ -12,10 +17,12 @@ public class ControladorCruz implements ControladorJuego {
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
     private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
+    private TableroVista vista;
 
-    public ControladorCruz(Tablero tablero) {
+    public ControladorCruz(Tablero tablero,TableroVista vista) {
         this.tablero = tablero;
-        this.contadorMovimientos = 0;
+        this.vista= vista;
+
     }
 
     public boolean seleccionarFicha(int fila, int col) {
@@ -49,7 +56,8 @@ public class ControladorCruz implements ControladorJuego {
         Ficha intermedia = tablero.getFicha(filaMedia, colMedia);
 
         if (intermedia != null && intermedia.isExiste()) {
-            // NUEVO: Guardar el movimiento antes de realizarlo
+            vista.iniciarTemporizador();
+
             pilaMovimientos.push(new MovimientoRealizado(
                     fichaSeleccionada, intermedia, destino
             ));
@@ -61,8 +69,26 @@ public class ControladorCruz implements ControladorJuego {
             contadorMovimientos++;
             // Verifica si se gana o se pierde
             if (verificarVictoria()) {
-                mostrarAlerta("¡Victoria!", "¡Ganaste! Solo queda una ficha.");
-            } else if (!hayMovimientosPosibles()) {
+                vista.detenerTemporizador();
+                int puntajeActual = vista.getPuntajeActual(); // asegúrate que vista tenga este método
+
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("¡Ganaste!");
+                dialog.setHeaderText("Ingresa tus 3 letras:");
+                dialog.setContentText("Nombre:");
+
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(nombre -> {
+                    if (nombre.matches("[A-Z]{3}")) {
+                        PuntajeManager.guardarPuntaje(nombre, puntajeActual,0, "cruz"); // o "triangulo"
+                        vista.actualizarTablaPuntajes(); // si tienes esto visible
+                    } else {
+                        Alert error = new Alert(Alert.AlertType.ERROR, "Debes ingresar exactamente 3 letras mayúsculas.");
+                        error.showAndWait();
+                    }
+                });
+            }else if (!hayMovimientosPosibles()) {
+                vista.detenerTemporizador();
                 mostrarAlerta("Derrota", "No hay más movimientos posibles.");
             }
 
@@ -89,7 +115,6 @@ public class ControladorCruz implements ControladorJuego {
         tablero.getFicha(mov.getDestino().getxPosicion(), mov.getDestino().getyPosicion())
                 .setExiste(mov.getDestino().isExiste());
 
-        contadorMovimientos--;
         return true;
     }
 

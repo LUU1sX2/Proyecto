@@ -1,7 +1,9 @@
+// TableroVista.java
 package vista;
 
-import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import modelo.PuntajeManager;
 import controlador.ControladorCruz;
@@ -16,7 +18,7 @@ import javafx.geometry.Pos;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,17 +44,47 @@ public class TableroVista extends Application {
         mostrarMenuPrincipal(primaryStage);
     }
 
+    private Background crearFondo() {
+        Image fondo = new Image(getClass().getResource("/img/fondo.png").toExternalForm());
+        BackgroundImage fondoImg = new BackgroundImage(
+                fondo,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, false)
+        );
+        return new Background(fondoImg);
+    }
+
+    private Button crearBotonConImagen(String imagePath, double width, double height) {
+        URL imageUrl = getClass().getClassLoader().getResource("img/" + imagePath);
+        if (imageUrl == null) {
+            System.err.println("⚠️ Imagen no encontrada: img/" + imagePath);
+            return new Button("X");
+        }
+
+        ImageView imagen = new ImageView(new Image(imageUrl.toExternalForm()));
+        imagen.setFitWidth(width);
+        imagen.setFitHeight(height);
+        Button boton = new Button();
+        boton.setGraphic(imagen);
+        boton.setStyle("-fx-background-color: transparent;");
+        return boton;
+    }
+
+
     public void mostrarMenuPrincipal(Stage primaryStage) {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
+        layout.setBackground(crearFondo());
 
-        Button triangular = new Button("Modo Triangular");
+        Button triangular = crearBotonConImagen("triangulo.png", 200, 50);
         triangular.setOnAction(e -> mostrarTableroTriangular(primaryStage));
 
-        Button cruz = new Button("Modo Cruz");
+        Button cruz = crearBotonConImagen("cruz.png", 200, 50);
         cruz.setOnAction(e -> mostrarTableroCruz(primaryStage));
 
-        Button salir = new Button("Salir del Juego");
+        Button salir = crearBotonConImagen("salir.png", 200, 50);
         salir.setOnAction(e -> System.exit(0));
 
         Label tituloTriangulo = new Label("Top 5 - Triangular:");
@@ -69,7 +101,7 @@ public class TableroVista extends Application {
 
         layout.getChildren().addAll(tablas, triangular, cruz, salir);
 
-        Scene scene = new Scene(layout, 600, 600);
+        Scene scene = new Scene(layout, 600, 500);
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Selecciona un modo");
@@ -80,11 +112,11 @@ public class TableroVista extends Application {
         int tamaño = 5;
         tablero = new Tablero(tamaño);
         controlador = new ControladorTriangulo(tablero, this);
-
         botones = new Button[tamaño][tamaño];
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
+        layout.setBackground(crearFondo());
         contadorLabel.setText("Movimientos: 0");
 
         for (int fila = 0; fila < tamaño; fila++) {
@@ -94,7 +126,9 @@ public class TableroVista extends Application {
             for (int col = 0; col <= fila; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
                 Button boton = new Button();
-                boton.setText(ficha.isExiste() ? "Ficha" : "");
+                boton.setGraphic(new ImageView(new Image(getClass().getResource(
+                        ficha.isExiste() ? "/img/ficha.png" : "/img/muerto.png").toExternalForm(), 50, 50, true, true)));
+                boton.setStyle("-fx-background-color: transparent;");
                 boton.setPrefSize(50, 50);
 
                 final int f = fila;
@@ -104,24 +138,24 @@ public class TableroVista extends Application {
                 botones[fila][col] = boton;
                 filaBotones.getChildren().add(boton);
             }
-
             layout.getChildren().add(filaBotones);
         }
+
         layout.getChildren().add(puntajeLabel);
 
         HBox controles = new HBox(10);
         controles.setAlignment(Pos.CENTER);
 
-        Button botonSalirMenu = new Button("Salir al Menú");
+        Button botonSalirMenu = crearBotonConImagen("menu.png", 100, 40);
         botonSalirMenu.setOnAction(e -> {
             mostrarMenuPrincipal(primaryStage);
             reiniciarTemporizador();
         });
 
-        Button botonSalirJuego = new Button("Salir del Juego");
+        Button botonSalirJuego = crearBotonConImagen("salir.png", 100, 40);
         botonSalirJuego.setOnAction(e -> System.exit(0));
 
-        Button undoBtn = new Button("Undo");
+        Button undoBtn = crearBotonConImagen("undo.jpg", 100, 40);
         undoBtn.setOnAction(e -> {
             if (controlador.deshacerUltimoMovimiento()) {
                 actualizarVista();
@@ -129,7 +163,7 @@ public class TableroVista extends Application {
             }
         });
 
-        Button reiniciarBtn = new Button("Reiniciar");
+        Button reiniciarBtn = crearBotonConImagen("reiniciar.png", 100, 40);
         reiniciarBtn.setOnAction(e -> {
             reiniciarTemporizador();
             mostrarTableroTriangular(primaryStage);
@@ -153,6 +187,7 @@ public class TableroVista extends Application {
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
+        layout.setBackground(crearFondo());
         contadorLabel.setText("Movimientos: 0");
 
         for (int fila = 0; fila < tamaño; fila++) {
@@ -161,55 +196,57 @@ public class TableroVista extends Application {
 
             for (int col = 0; col < tamaño; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
-                Button boton = new Button();
-                boton.setText((ficha != null && ficha.isExiste()) ? "Ficha" : "");
-                boton.setPrefSize(50, 50);
-
-                final int f = fila;
-                final int c = col;
-                boton.setOnAction(e -> {
-                    if (seleccionando) {
-                        if (controlador.seleccionarFicha(f, c)) {
-                            seleccionando = false;
-                        }
-                    } else {
-                        if (controlador.moverFicha(f, c)) {
-                            actualizarVistaCruz();
-                        }
-                        seleccionando = true;
-                    }
-                });
-
-                botones[fila][col] = boton;
                 if (ficha != null) {
+                    Button boton = new Button();
+                    boton.setGraphic(new ImageView(new Image(getClass().getResource(
+                            ficha.isExiste() ? "/img/ficha.png" : "/img/muerto.png").toExternalForm(), 50, 50, true, true)));
+                    boton.setStyle("-fx-background-color: transparent;");
+                    boton.setPrefSize(50, 50);
+
+                    final int f = fila;
+                    final int c = col;
+                    boton.setOnAction(e -> {
+                        if (seleccionando) {
+                            if (controlador.seleccionarFicha(f, c)) {
+                                seleccionando = false;
+                            }
+                        } else {
+                            if (controlador.moverFicha(f, c)) {
+                                actualizarVistaCruz();
+                            }
+                            seleccionando = true;
+                        }
+                    });
+
+                    botones[fila][col] = boton;
                     filaBotones.getChildren().add(boton);
                 }
             }
-
             layout.getChildren().add(filaBotones);
         }
+
         layout.getChildren().add(puntajeLabel);
 
         HBox controles = new HBox(10);
         controles.setAlignment(Pos.CENTER);
 
-        Button botonSalirMenu = new Button("Salir al Menú");
+        Button botonSalirMenu = crearBotonConImagen("menu.png", 100, 40);
         botonSalirMenu.setOnAction(e -> {
             mostrarMenuPrincipal(primaryStage);
             reiniciarTemporizador();
         });
 
-        Button botonSalirJuego = new Button("Salir del Juego");
+        Button botonSalirJuego = crearBotonConImagen("salir.png", 100, 40);
         botonSalirJuego.setOnAction(e -> System.exit(0));
 
-        Button undoBtn = new Button("Undo");
+        Button undoBtn = crearBotonConImagen("undo.jpg", 100, 40);
         undoBtn.setOnAction(e -> {
             if (controlador.deshacerUltimoMovimiento()) {
                 actualizarVistaCruz();
             }
         });
 
-        Button reiniciarBtn = new Button("Reiniciar");
+        Button reiniciarBtn = crearBotonConImagen("reiniciar.png", 100, 40);
         reiniciarBtn.setOnAction(e -> {
             reiniciarTemporizador();
             mostrarTableroCruz(primaryStage);
@@ -244,14 +281,11 @@ public class TableroVista extends Application {
             for (int col = 0; col < tablero.getTamaño(); col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
                 if (ficha != null) {
-                    botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
+                    botones[fila][col].setGraphic(new ImageView(new Image(getClass().getResource(
+                            ficha.isExiste() ? "/img/ficha.png" : "/img/muerto.png").toExternalForm(), 50, 50, true, true)));
                 }
             }
         }
-        contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
-    }
-
-    private void actualizarContador() {
         contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
     }
 
@@ -259,26 +293,27 @@ public class TableroVista extends Application {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col <= fila; col++) {
                 Ficha ficha = tablero.getFicha(fila, col);
-                botones[fila][col].setText(ficha.isExiste() ? "Ficha" : "");
+                botones[fila][col].setGraphic(new ImageView(new Image(getClass().getResource(
+                        ficha.isExiste() ? "/img/ficha.png" : "/img/muerto.png").toExternalForm(), 50, 50, true, true)));
             }
         }
+    }
+
+    private void actualizarContador() {
+        contadorLabel.setText("Movimientos: " + controlador.getContadorMovimientos());
     }
 
     public void iniciarTemporizador() {
         if (temporizadorIniciado) return;
 
         temporizadorIniciado = true;
-
-        if (temporizador != null) {
-            temporizador.stop();
-        }
-
+        if (temporizador != null) temporizador.stop();
         tiempoTranscurrido = 0;
         puntaje = 0;
 
         temporizador = new Timeline(new KeyFrame(Duration.millis(10), e -> {
             tiempoTranscurrido++;
-            puntaje = (int) (tiempoTranscurrido);
+            puntaje = (int) tiempoTranscurrido;
             puntajeLabel.setText("Puntaje: " + puntaje);
         }));
         temporizador.setCycleCount(Timeline.INDEFINITE);
@@ -286,16 +321,12 @@ public class TableroVista extends Application {
     }
 
     public void detenerTemporizador() {
-        if (temporizador != null) {
-            temporizador.stop();
-        }
+        if (temporizador != null) temporizador.stop();
         temporizadorIniciado = false;
     }
 
     public void reiniciarTemporizador() {
-        if (temporizador != null) {
-            temporizador.stop();
-        }
+        if (temporizador != null) temporizador.stop();
         tiempoTranscurrido = 0;
         puntaje = 0;
         puntajeLabel.setText("Puntaje: 0");
@@ -305,7 +336,6 @@ public class TableroVista extends Application {
     public void actualizarTablaPuntajes() {
         List<String> puntajesTriangulo = PuntajeManager.cargarMejoresPuntajes("triangulo");
         List<String> puntajesCruz = PuntajeManager.cargarMejoresPuntajes("cruz");
-
         listaPuntajesTriangulo.getItems().setAll(puntajesTriangulo);
         listaPuntajesCruz.getItems().setAll(puntajesCruz);
     }
@@ -315,7 +345,6 @@ public class TableroVista extends Application {
         dialog.setTitle("¡Ganaste!");
         dialog.setHeaderText("Ingresa tus 3 letras:");
         dialog.setContentText("Nombre:");
-
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(nombre -> {
             if (nombre.matches("[A-Z]{3}")) {

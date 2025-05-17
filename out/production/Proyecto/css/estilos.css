@@ -1,0 +1,45 @@
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-width: 3px;
+    -fx-padding: 10px;
+    -fx-background-radius: 5px;
+}
+
+.list-view .cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FFFFFF;
+    -fx-padding: 5px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.list-view .cell:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+}
+
+
+.contador {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+    -fx-border-radius: 5px;
+}
+
+

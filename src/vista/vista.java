@@ -19,7 +19,6 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -35,8 +34,8 @@ public class vista extends Application {
     private Timeline temporizador;
     private long tiempoTranscurrido = 0;
     private Label contadorLabel = new Label("Movimientos: 0");
-    private ListView<String> listaPuntajesTriangulo = new ListView<>();
-    private ListView<String> listaPuntajesCruz = new ListView<>();
+    public ListView<String> listaPuntajesTriangulo = new ListView<>();
+    public ListView<String> listaPuntajesCruz = new ListView<>();
     private boolean temporizadorIniciado = false;
 
     @Override
@@ -59,10 +58,6 @@ public class vista extends Application {
 
     private Button crearBotonConImagen(String imagePath, double width, double height) {
         URL imageUrl = getClass().getClassLoader().getResource("img/" + imagePath);
-        if (imageUrl == null) {
-            System.err.println("⚠️ Imagen no encontrada: img/" + imagePath);
-            return new Button("X");
-        }
 
         ImageView imagen = new ImageView(new Image(imageUrl.toExternalForm()));
         imagen.setFitWidth(width);
@@ -372,8 +367,6 @@ public class vista extends Application {
             currentMediaPlayer = new MediaPlayer(media);
             currentMediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             currentMediaPlayer.play();
-        } else {
-            System.out.println("Archivo no encontrado: " + archivoMusica);
         }
     }
 

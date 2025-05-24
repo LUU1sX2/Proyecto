@@ -4,7 +4,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import modelo.Ficha;
 import modelo.Tablero;
-
 import java.util.Optional;
 import java.util.Stack;
 import modelo.MovimientoRealizado;
@@ -83,7 +82,7 @@ public class ControladorCruz implements ControladorJuego {
                     if (result.isPresent()) {
                         String nombre = result.get().toUpperCase();
                         if (nombre.matches("[A-Z]{3}")) {
-                            PuntajeManager.guardarPuntaje(nombre, puntajeActual, "cruz"); // o "triangulo"
+                            PuntajeManager.guardarPuntaje(nombre, puntajeActual, "cruz");
                             vista.actualizarTablaPuntajes();
                             nombreValido = true;
                         } else {

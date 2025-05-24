@@ -4,7 +4,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import modelo.Ficha;
 import modelo.Tablero;
-
 import java.util.Optional;
 import java.util.Stack;
 import modelo.MovimientoRealizado;
@@ -17,7 +16,6 @@ public class ControladorTriangulo implements ControladorJuego {
     private Ficha fichaSeleccionada;
     private int contadorMovimientos;
     private vista vista;
-    private boolean temporizadorIniciado = false;
     private Stack<MovimientoRealizado> pilaMovimientos = new Stack<>();
 
     public ControladorTriangulo(Tablero tablero, vista vista) {
@@ -64,16 +62,15 @@ public class ControladorTriangulo implements ControladorJuego {
                     fichaSeleccionada, intermedia, destino
             ));
 
-            intermedia.setExiste(false); // ficha comida
+            intermedia.setExiste(false);
             destino.setExiste(true);
             fichaSeleccionada.setExiste(false);
             fichaSeleccionada = null;
             contadorMovimientos++;
 
-            // Verifica si se gana o se pierde
             if (verificarVictoria()) {
                 vista.detenerTemporizador();
-                int puntajeActual = vista.getPuntajeActual(); // asegúrate que vista tenga este método
+                int puntajeActual = vista.getPuntajeActual();
 
                 boolean nombreValido = false;
                 TextInputDialog dialog = new TextInputDialog();
@@ -142,7 +139,7 @@ public class ControladorTriangulo implements ControladorJuego {
         return contador == 1;
     }
 
-    private boolean hayMovimientosPosibles() {
+    public boolean hayMovimientosPosibles() {
         for (int fila = 0; fila < tablero.getTamaño(); fila++) {
             for (int col = 0; col <= fila; col++) {
                 Ficha f = tablero.getFicha(fila, col);
